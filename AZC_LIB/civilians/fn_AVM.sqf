@@ -92,7 +92,7 @@ if (typeName _whiteListParam == "ARRAY") then
 missionNamespace setVariable ["AZC_VEHICLE_CLASSES", _classlistVehicles];
 
 // get trigger zones if they exist
-_zones = [_locations] call AZC_fnc_GetZones2;
+_zones = [_locations] call AZC_fnc_GetZones;
 _lastLocation = objNull;
 
 // get closest town to player (format = [position],range)

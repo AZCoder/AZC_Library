@@ -143,7 +143,7 @@ if (_generateVehicle && ((player distance _vehPos) > 50)) then
 	
 	if (_includeCrew && (driver _vehicle isNotEqualTo objNull)) then
 	{
-		_vehPos = [_vehicle,_house] call AZC_fnc_SetVehicleOnRoad2;
+		_vehPos = [_vehicle,_house] call AZC_fnc_SetVehicleOnRoad;
 		_roadDestination = [_playerLocation,_center] call AZC_fnc_FindVehicleDestination;
 		player vehicleChat format["create driver: %1",driver _vehicle];
 		[_vehicle,_roadDestination] call AZC_fnc_SetVehicleDestination;
