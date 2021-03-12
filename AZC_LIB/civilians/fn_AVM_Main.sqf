@@ -1,10 +1,10 @@
 if (isNil "AZC_Debug") then { AZC_Debug = false; };
 
 // handles central part of AVM spawning loop
-params ["_vehicleList","_chanceCrew","_nearestLocation","_origins"];
+params ["_vehicleList","_chanceCrew","_nearestLocation","_origins","_whiteList","_blacklist"];
 _activeSpawns = count(_vehicleList);
 if (_activeSpawns >= _maxVehicles) exitWith { _vehicleList };
-if (!(_nearestLocation isEqualTo [[0,0,0],0]) && (count _origins > 0)) then
+if (_nearestLocation isNotEqualTo [[0,0,0],0]) then
 {
 	_hasCrew = false;
 	if ((floor(random(100))) < _chanceCrew) then
@@ -17,7 +17,7 @@ if (!(_nearestLocation isEqualTo [[0,0,0],0]) && (count _origins > 0)) then
 	_spawnLocation = _nearestLocation;
 	// 75% of all spawned cars will be local, 25% can be any nearby origin location
 	_rand = random(100);
-	if (_hasCrew && (_rand > 75)) then
+	if ((count _origins > 0) && _hasCrew && (_rand > 75)) then
 	{
 		_index = floor random(count(_origins));
 		_spawnLocation = _origins select _index;
@@ -52,7 +52,7 @@ if (!(_nearestLocation isEqualTo [[0,0,0],0]) && (count _origins > 0)) then
 		missionNamespace setVariable ["AZC_AVM_TOWNS",_towns];
 	};
 	
-	_vehicle = [(_nearestLocation select 0),(_spawnLocation select 0),(_spawnLocation select 1),_blackList,_whiteList,_housesInRange,_hasCrew,_allowOffroad] call AZC_fnc_CreateVehicle;
+	_vehicle = [(_nearestLocation select 0),(_spawnLocation select 0),(_spawnLocation select 1),_whiteList,_blackList,_housesInRange,_hasCrew,_allowOffroad] call AZC_fnc_CreateVehicle;
 	if (!isNil "_vehicle") then
 	{
 		if (!isNull _vehicle) then
@@ -67,10 +67,7 @@ if (!(_nearestLocation isEqualTo [[0,0,0],0]) && (count _origins > 0)) then
 		{
 			["Null vehicle, could not spawn."] call AZC_fnc_Debug;
 		};
-	};
 
-	if (!isNil "_vehicle") then
-	{
 		[(format ["Vehicle: %3 --- _activeSpawns: %1 --- _maxVehicles: %2",_activeSpawns,_maxVehicles,_vehicle])] call AZC_fnc_Debug;
 	};
 };

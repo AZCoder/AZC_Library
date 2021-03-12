@@ -27,7 +27,10 @@ Parameters:
 Returns: the marker
 
 Examples:
+	// add marker with 5 sec refresh
 	[AZC_Squad,"Bravo Squad",false,5] call AZC_fnc_AutoMarker;
+	// terminate marker
+	[AZC_Squad,"",true] call AZC_fnc_AutoMarker;
 ---------------------------------------------------------------------------- */
 params ["_target","_text","_terminate","_updateTime"];
 private["_marker","_markerList","_markerIndex","_markerIndexName"];

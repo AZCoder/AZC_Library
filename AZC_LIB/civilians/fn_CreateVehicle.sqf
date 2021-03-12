@@ -61,10 +61,10 @@ Examples:
 private ["_range","_blacklist","_whiteListParam","_blackListParam","_destinationRange","_includeCrew","_houseBlacklist","_allowOffroad"];
 
 _playerLocation		= [_this, 0] call bis_fnc_param;
-_center			= [_this, 1] call bis_fnc_param;
-_range 			= [_this, 2, 1000, [0]] call bis_fnc_param;
-_blackList		= [_this, 3, []] call bis_fnc_param;
-_whiteList		= [_this, 4, []] call bis_fnc_param;
+_center				= [_this, 1] call bis_fnc_param;
+_range 				= [_this, 2, 1000, [0]] call bis_fnc_param;
+_whiteList			= [_this, 3, []] call bis_fnc_param;
+_blackList			= [_this, 4, []] call bis_fnc_param;
 _housesInRange		= [_this, 5, []] call bis_fnc_param;
 _includeCrew		= [_this, 6, false, [false]] call bis_fnc_param;
 _allowOffroad		= [_this, 7, false, [false]] call bis_fnc_param;
@@ -125,13 +125,15 @@ if (count _vehPos < 1) then { _vehPos = _housePos; };
 
 // determine if vehicle is allowed to have a driver
 _roads = _housePos nearRoads 30;
-if ((count(_roads) < 1) && !_allowOffroad) then
+
+private _generateVehicle = true;
+if (_includeCrew && (count(_roads) < 1) && !_allowOffroad) then
 {
-	_includeCrew = false;
+	_generateVehicle = false;
 };
 
 // do not spawn if within 50m of player
-if ((player distance _vehPos) > 50) then
+if (_generateVehicle && ((player distance _vehPos) > 50)) then
 {
 	_vehDirection = getDir _house;
 	
@@ -139,10 +141,11 @@ if ((player distance _vehPos) > 50) then
 	_vehicle = [_vehClass,_vehPos,civilian,_includeCrew,_vehDirection,0,"NONE",[],false,0,true,false] call AZC_fnc_CreateUnit;
 	_vehicle setVectorUp [0,0,1];
 	
-	if (_includeCrew) then
+	if (_includeCrew && (driver _vehicle isNotEqualTo objNull)) then
 	{
-		_vehPos = [_vehicle,_house] call AZC_fnc_SetVehicleOnRoad;
+		_vehPos = [_vehicle,_house] call AZC_fnc_SetVehicleOnRoad2;
 		_roadDestination = [_playerLocation,_center] call AZC_fnc_FindVehicleDestination;
+		player vehicleChat format["create driver: %1",driver _vehicle];
 		[_vehicle,_roadDestination] call AZC_fnc_SetVehicleDestination;
 	}
 	else

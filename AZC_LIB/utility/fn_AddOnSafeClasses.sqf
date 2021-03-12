@@ -24,8 +24,8 @@ _safeList = ["RDS_Woodlander2","C_mas_cer_7_i"] call AZC_fnc_AddOnSafeClasses;
 	
 ---------------------------------------------------------------------------- */
 private ["_array","_class"];
-
 _array = [];
+
 {
 	_class = _x;
 	if ((count(configFile >> "CfgVehicles" >> _x) > 0) ||

@@ -11,6 +11,8 @@ if (!(isNil "_roadDestination")) then
 	_vehicle engineOn true;
 	// give waypoints
 	_destWP = [_vehicle,_roadDestination,"MOVE","SAFE","LIMITED","BLUE"] call AZC_fnc_AddWaypoint;
+	if (isNil "_destWP") exitWith {};
+	
 	_vehicle setVariable["AZC_DESTINATION",_destWP];
 	_housesInRange = _roadDestination nearObjects ["house",100];
 	if (count(_housesInRange) > 0) then

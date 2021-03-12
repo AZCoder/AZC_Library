@@ -13,6 +13,7 @@ _maxRange	= [_this, 1] call bis_fnc_param;
 
 _nearestLocation = [[0,0,0],0];
 _localities = +_origins;
+
 // if locations are provided, only spawn at those locations, otherwise spawn at nearest location
 if (count _origins < 1) then
 {
@@ -21,7 +22,6 @@ if (count _origins < 1) then
 	{
 		_locations pushBack _x;
 	} forEach nearestLocations [player, ["NameCity","NameCityCapital","NameVillage"], _maxRange];
-	//systemChat format["_maxRange: %1, _locations: %2",_maxRange,_locations];
 
 	if (count(_locations) < 1) exitWith { };
 	_closest = _locations select 0;
@@ -49,6 +49,8 @@ if (count _origins < 1) then
 	};
 };
 
+// systemChat format["_localities: %1",_localities];
+
 if (count _localities == 1) then { _nearestLocation = _localities select 0; };
 if (count _localities > 1) then
 {
@@ -62,4 +64,7 @@ if (count _localities > 1) then
 		};
 	} forEach _localities;
 };
+
+if ((_nearestLocation # 0) distance player > _maxRange) then { _nearestLocation = [[0,0,0],0]; };
+
 _nearestLocation

@@ -52,7 +52,7 @@ Parameters:
 Returns: nothing
 
 Basic Example:
-	[AZC_KNIGHT,"UNDERGROUND_KNIGHT16","STR_UNDERGROUND_KNIGHT16","Knight",3,200,1.2,true] execVM "fn_Say.sqf";
+	[AZC_KNIGHT,"UNDERGROUND_KNIGHT16","STR_UNDERGROUND_KNIGHT16","Knight",3,200,1.2,true] spawn AZC_fnc_Say3D;
 
 ---------------------------------------------------------------------------- */
 

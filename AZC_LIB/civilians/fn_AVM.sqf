@@ -60,7 +60,7 @@ Examples:
 ---------------------------------------------------------------------------- */
 if (isNil "AZC_Debug") then { AZC_Debug = false; };
 
-private ["_maxVehicles","_checkTime","_blackList","_vehicleList","_vehicle","_ambientManagerActive","_vehiclesToDelete","_activeSpawns","_chanceCrew","_allowOffroad","_zones","_townList"];
+private ["_maxVehicles","_checkTime","_blackList","_vehicleList","_vehicle","_ambientManagerActive","_vehiclesToDelete","_activeSpawns","_chanceCrew","_allowOffroad","_zones"];
 
 _locations			= [_this, 0, []] call bis_fnc_param;
 _minDistance		= [_this, 1, 1000, [1]] call bis_fnc_param;
@@ -92,32 +92,12 @@ if (typeName _whiteListParam == "ARRAY") then
 missionNamespace setVariable ["AZC_VEHICLE_CLASSES", _classlistVehicles];
 
 // get trigger zones if they exist
-_zones = [_locations] call AZC_fnc_GetZones;
-if (count _zones == 0) then
-{
-	_townList = [];
-	{
-		_pos = _x call AZC_fnc_GetPos;
-		_townList pushBack [_pos,1200];
-		
-		if (AZC_DEBUG) then
-		{
-			_markerIndex = random 393942;
-			_markerIndexName = format["AZC_MARKER_%1",_markerIndex];
-			_marker = createMarker [_markerIndexName, position _x];
-			_marker setMarkerShape "ICON";
-			_markerIndexName setMarkerType "lop_flag_cdf";
-		};
-	} forEach nearestLocations [player, ["NameCity","NameCityCapital","NameVillage"],2000];
-}
-else
-{
-	_townList = _zones;
-};
+_zones = [_locations] call AZC_fnc_GetZones2;
 _lastLocation = objNull;
 
 // get closest town to player (format = [position],range)
-_nearestLocation = [_townList,_minDistance] call AZC_fnc_GetNearestLocation;
+_nearestLocation = [_zones,_minDistance] call AZC_fnc_GetNearestLocation;
+
 while { _ambientManagerActive } do
 {
 	_vehicleList = missionNamespace getVariable "AZC_VehicleList";
@@ -126,7 +106,8 @@ while { _ambientManagerActive } do
 		_vehicleList = [];
 	};
 	
-	_vehicleList = [_vehicleList,_chanceCrew,_nearestLocation,_townList] call AZC_fnc_AVM_Main;
+	// systemChat format["%3 -> _nearestLocation: %1 = %2m",_nearestLocation,(player distance (_nearestLocation select 0)),time];
+	_vehicleList = [_vehicleList,_chanceCrew,_nearestLocation,_zones,_whiteList,_blacklist] call AZC_fnc_AVM_Main;
 	_activeSpawns = count(_vehicleList);
 	if (_activeSpawns >= _maxVehicles) then
 	{
@@ -135,17 +116,12 @@ while { _ambientManagerActive } do
 
 	_checkTime = 0.1;
 	_usedHouses = missionNamespace getVariable "AZC_UsedCivHouses";
+	if (_nearestLocation isEqualTo [[0,0,0],0]) then { _checkTime = 10; };
 	if (_activeSpawns >= _maxVehicles) then { _checkTime = 10; };
 	sleep _checkTime;
 
-	_townList = [];
-	{
-		_pos = _x call AZC_fnc_GetPos;
-		_townList pushBack [_pos,1200];
-	} forEach nearestLocations [player, ["NameCity","NameCityCapital","NameVillage"],2000];
-	
 	// get closest town to player (format = [position],range)
-	_nearestLocation = [_townList,_minDistance] call AZC_fnc_GetNearestLocation;
+	_nearestLocation = [_zones,_minDistance] call AZC_fnc_GetNearestLocation;
 	if (typeName _lastLocation != "ARRAY") then { _lastLocation = _nearestLocation; };
 
 	// cleanup vehicles that are too far from player
