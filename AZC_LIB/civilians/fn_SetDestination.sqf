@@ -20,10 +20,10 @@ if (count _housesInRange > 0) then
 	while { alive _civ && !_panic } do
 	{
 		sleep 1;
-		_targetHouse = _housesInRange select (floor random(count(_housesInRange)));
+		_targetHouse = selectRandom _housesInRange;
 		if (!(isNull _targetHouse && (typeName _targetHouse == "OBJECT"))) then
 		{
-			_posLoc = getPos _targetHouse;
+			_destPos = getPos _targetHouse;
 			_startLoc = getPos _civ;
 			
 			// does destination building have positions?
@@ -31,17 +31,17 @@ if (count _housesInRange > 0) then
 			if (count _buildingPositions > 0) then
 			{
 				_index = floor random(count _buildingPositions);
-				_posLoc = _buildingPositions select _index;
+				_destPos = _buildingPositions select _index;
 			};
 			
-			if (typeName _posLoc != "ARRAY") then { _posLoc = getPos player; };
-			_civ doMove _posLoc;
+			if (typeName _destPos != "ARRAY") then { _destPos = getPos player; };
+			_civ doMove _destPos;
 			_civ setUnitPos "UP";
 			// testing AWARE to keep them off the roadways
 			_civ setBehaviour "AWARE";
 			_civ forceWalk true;
 			_civ setVariable ["AZC_CIV_OTM",true];
-			[format["Civ %1 is moving to %2. Panic? %3",_civ,_posLoc,(_civ getVariable ["AZC_PANIC",false])],false,true] call AZC_fnc_Debug;
+			[format["Civ %1 is moving to %2. Panic? %3",_civ,_destPos,(_civ getVariable ["AZC_PANIC",false])],false,true] call AZC_fnc_Debug;
 			
 			sleep 5;
 			waitUntil {
@@ -54,6 +54,9 @@ if (count _housesInRange > 0) then
 			
 			if (isNull _civ || !(alive _civ)) exitWith {};
 			if (_panic) exitWith { [_civ] spawn AZC_fnc_CivRun; };
+			
+			// did Civ stop on the road like a dork?
+			if (isOnRoad _civ) then { continue }; // repeat destination loop
 
 			// are any other people within 30m?
 			_nearby = [_civ] call AZC_fnc_GetClosestHuman;

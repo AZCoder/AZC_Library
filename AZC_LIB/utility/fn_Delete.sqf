@@ -57,16 +57,17 @@ switch (typeName _object) do
 	case "STRING": 	{
 				[_object,_distance,_wait,_destination] spawn
 				{
-					private ["_timer"];
-					_timer = time + (_this select 2);
-					_destination = _this select 3;
+					params ["_object","_distance","_wait","_destination"];
+					_wait = time + _wait;
+					
 					if (count _destination == 2) then
 					{
 						_targLoc = _destination select 0;
 						_targDist = _destination select 1;
-						waitUntil { (_this select 0) distance (getMarkerPos _targLoc) < _targDist };
+						waitUntil { _object distance (getMarkerPos _targLoc) < _targDist };
 					};
-					waitUntil { (player distance (getMarkerPos (_this select 0)) > (_this select 1)) && (time > _timer) };
+					
+					waitUntil { ((player distance getMarkerPos _object) > _distance) && (time > _wait) };
 					deleteMarker (_this select 0);
 				};
 			};
@@ -74,42 +75,43 @@ switch (typeName _object) do
 	case "OBJECT": 	{
 				[_object,_distance,_wait,_destination] spawn
 				{
-					private ["_timer","_obj"];
-					_obj = _this select 0;
-					_timer = time + (_this select 2);
-					_destination = _this select 3;
+					params ["_object","_distance","_wait","_destination"];
+					_wait = time + _wait;
+					
 					if (count _destination == 2) then
 					{
 						_targLoc = _destination select 0;
 						_targDist = _destination select 1;
-						waitUntil { _obj distance (getMarkerPos _targLoc) < _targDist };
+						waitUntil { _object distance (getMarkerPos _targLoc) < _targDist };
 					};
-					waitUntil { (player distance (getPos _obj) > (_this select 1)) && (time > _timer) };
-					{ _obj deleteVehicleCrew _x; } forEach crew _obj;
-					deleteVehicle _obj;
+					
+					waitUntil { (player distance (getPos _object) > _distance) && (time > _wait) };
+					{ _object deleteVehicleCrew _x; } forEach crew _object;
+					deleteVehicle _object;
 				};
 			};
 
 	case "GROUP":	{
 				[_object,_distance,_wait,_destination] spawn
 				{
-					private ["_timer","_obj","_lead"];
-					_obj = _this select 0;
-					_lead = (units _obj select 0);
-					_timer = time + (_this select 2);
-					_destination = _this select 3;
+					params ["_object","_distance","_wait","_destination"];
+					_wait = time + _wait;
+
+					private _leader = leader _object;
 					if (count _destination == 2) then
 					{
 						_targLoc = _destination select 0;
 						_targDist = _destination select 1;
-						waitUntil { _lead distance (getMarkerPos _targLoc) < _targDist };
+						waitUntil { _leader distance (getMarkerPos _targLoc) < _targDist };
 					};
-					waitUntil { (player distance (getPos _lead) > (_this select 1)) && (time > _timer) };
+					
+					waitUntil { (player distance (getPos _leader) > (_this select 1)) && (time > _wait) };
+					
 					{
 						deleteVehicle (vehicle _x);
 						deleteVehicle _x;
-					} forEach units _obj;
-					deleteGroup _obj;
+					} forEach units _object;
+					deleteGroup _object;
 				};
 			};
 

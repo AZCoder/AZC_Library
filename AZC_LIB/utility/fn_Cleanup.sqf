@@ -15,8 +15,8 @@ Parameters:
 	    An area trigger, or objNull for all units on map
 	1 : _distance
 	    INT
-	    default: 1000
-	    DISTANCE of a dead unit from player before cleanup
+	    default: 200
+	    DISTANCE of a dead unit from player before cleanup, use 0 to ignore distance
 
 Returns: nothing.
 
