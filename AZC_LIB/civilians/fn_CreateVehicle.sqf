@@ -193,30 +193,26 @@ if (!(isNil "_vehicle")) then
 			_vehicle = nil;
 			_msg = format ["Deleting vehicle for height and vector: %1 - %2",_absHeight,_absVector];
 			[_msg] spawn AZC_fnc_Debug;
-		};
-		
-		// still getting some explosions, had one guy ram his SUV into a pole and explode!
-		// sleep 2;
-		if (isNil "_vehicle") exitWith {};
-		[_vehicle] spawn
+		}
+		else
 		{
-			params["_veh"];
-			waitUntil { player distance _veh < 100 };
-			if (!(isNil "_veh")) then { _veh allowDamage true; };
+			// unfortunately vehicles can still explode if spawned on a building
+			// I suspect vehicles spawn on a building, code above moves them to middle of road correctly
+			// but they have already exploded so we still get burning recks on the roadways]
+			// Easy fix would be to spawn only on roads, but cars on the road need a driver or they just
+			// clutter up the roadway, and I want empty cars spawned in good parking areas. Works 80% of the time.
+			[_vehicle] spawn
+			{
+				params["_veh"];
+				private _startPos = getPos _veh;
+				while { _veh isNotEqualTo objNull } do
+				{
+					if (_startPos distance _veh > 10) then { _veh allowDamage true; };
+					sleep 5;
+				};
+			};
 		};
 	};
-
-	// player allowDamage false;
-	// player setPos [(getPos _vehicle select 0)+3,(getPos _vehicle select 1)-3,0];
-	// missionNamespace setVariable ["AZC_AmbientVehicleManagerActive",false];
-	// TRUCK = _vehicle;
-
-	// _vector = format["%1",(vectorDir _vehicle)];
-	// _curPos = getPosATL _vehicle;
-	// player setPos [(_curPos select 0)+5,(_curPos select 1)-5,(_curPos select 2)];
-	// _houseFormat = format["%1 -> final vehPos: %2 -> final vector: %3",_house,_curPos,_vector];
-	// systemChat _houseFormat;
-	// copyToClipboard _houseFormat;
 };
 
 if (isNil "_vehicle") then
