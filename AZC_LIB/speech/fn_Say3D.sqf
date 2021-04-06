@@ -63,6 +63,9 @@ if (alive _speaker) then
 	if (accTime != 1) then { setAccTime 1; };
 	if (_displayName isEqualTo "") then { _displayName = name _speaker; };
 	if (_textDuration < 3) then { _textDuration = 3; };
-	[_displayName,(localize _textXML),_textDuration] call AZC_fnc_ShowSubtitle2;
+	if (count _textXML > 0) then
+	{
+		[_displayName,(localize _textXML),_textDuration] call AZC_fnc_ShowSubtitle2;
+	};
 	if (!(isNil "_soundClass")) then { _speaker say3D [_soundClass,_maxDistance,_pitch,_isSpeech]; };
 };

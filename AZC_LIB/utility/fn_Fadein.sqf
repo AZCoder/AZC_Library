@@ -30,11 +30,9 @@ Examples:
 params[["_fadeDelay",5],["_soundDelay",5],["_maxVolume",1]];
 if (_fadeDelay < 0 || _fadeDelay > 20) then { _fadeDelay = 20; };
 if (_soundDelay < 0 || _soundDelay > 20) then { _fadeDelay = 20; };
+if (_maxVolume < 0 || _maxVolume > 1) then { _maxVolume = 1; };
 cutText ["","BLACK IN",_fadeDelay];
-sleep 1;
 _soundDelay fadeSound _maxVolume;
-if (_fadeDelay < 1) then { _fadeDelay = 1; };
-sleep (_fadeDelay - 1);
 _soundDelay fadeSpeech _maxVolume;
 enableRadio true;
 enableSentences true;

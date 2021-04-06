@@ -129,6 +129,7 @@ class CfgFunctions
 			class ClearJournal {};
 			class Delete {};
 			class ExtractClasses {};
+			class Fadein {};
 			class GetSpokenDate {};
 			class GetSpokenDirection {};
 			class Hibernate {};
@@ -140,7 +141,6 @@ class CfgFunctions
 		class visual
 		{
 			file = "AZC_Library\AZC_LIB\visual";
-			class Fadein {};
 			class FogBreath {};
 			class IFF {};
 			class IntroTitle {};

@@ -109,7 +109,11 @@ if !("ItemRadio" in (assignedItems _listener)) then
 	_listener linkItem "ItemRadio";
 };
 
-[_name,(localize _textXML)] call AZC_fnc_ShowSubtitle2;
+if (count _textXML > 0) then
+{
+	[_name,(localize _textXML)] call AZC_fnc_ShowSubtitle2;
+};
+
 if (_sentenceClass != "") then
 {
 	_speaker kbTell [_listener,_conversation,_sentenceClass,["",{},"",[]],_forceRadio];

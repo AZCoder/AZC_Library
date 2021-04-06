@@ -15,10 +15,10 @@ Returns: string of the date
 Examples:
 	_date = call AZC_fnc_GetSpokenDate;
 ---------------------------------------------------------------------------- */
-params[["_date",date]];
+params [["_date",date]];
 private ["_heading","_spoken","_day","_month","_hour","_minute"];
 
-_month = 	switch (_date select 1) do
+_month = switch (_date select 1) do
 		{
 			case 1: { "January" };
 			case 2: { "February" };
@@ -48,6 +48,6 @@ _minute = _date select 4;
 if (_hour < 10) then { _hour = format["0%1",_hour]; };
 if (_minute < 10) then { _minute = format["0%1",_minute]; };
 _date = format["%1 %2, %3",_month,_day,(_date select 0)];
-_spoken = format["%1  %2:%3 %4 hours",_date,_hour,_minute];
+_spoken = format["%1 %2:%3 %4 hours",_date,_hour,_minute];
 
 _spoken
