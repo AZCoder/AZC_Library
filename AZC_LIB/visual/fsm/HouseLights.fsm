@@ -1,0 +1,179 @@
+/*%FSM<COMPILE "D:\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HouseLights">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-50.000000,55.000000,40.000000,105.000000,0.000000,"Start"};
+item1[] = {"__isServer",4,218,-50.000000,-15.000000,40.000000,35.000000,0.000000,"!isServer"};
+item2[] = {"isServer",4,218,65.000000,55.000000,155.000000,105.000000,0.000000,"isServer"};
+item3[] = {"End",1,250,65.000000,-20.000000,155.000000,30.000000,0.000000,"End"};
+item4[] = {"_",2,4346,-50.000000,-95.000000,40.000000,-45.000000,0.000000,""};
+item5[] = {"wait",4,218,-50.000000,-165.000000,40.000000,-115.000000,0.000000,"wait"};
+item6[] = {"dead_or_deleted",4,218,65.000000,-95.000000,155.000000,-45.000000,0.000000,"dead or deleted"};
+link0[] = {0,1};
+link1[] = {0,2};
+link2[] = {1,4};
+link3[] = {2,3};
+link4[] = {4,5};
+link5[] = {4,6};
+link6[] = {5,4};
+link7[] = {6,3};
+globals[] = {0.000000,0,0,0,0,640,480,1,14,6316128,1,-198.342651,304.972534,204.972473,-281.768097,911,894,1};
+window[] = {2,-1,-1,-1,-1,1123,2586,3846,386,3,929};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HouseLights";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"_Center = if (count _this > 0) then {_this select 0} else {Player};" \n
+                         "_Time = if (count _this > 1) then {_this select 1} else {5};" \n
+                         "_Radius = if (count _this > 2) then {_this select 2} else {250};" \n
+                         "_Brightness = if (count _this > 3) then {_this select 3} else {0.8};" \n
+                         "_Color = if (count _this > 4) then {_this select 4} else {[0.7,0.7,0.85]};" \n
+                         "_mAngle = if (count _this > 5) then {_this select 5} else {-180};" \n
+                         "_xAngle = if (count _this > 6) then {_this select 6} else {-10};" \n
+                         "_Random = if (count _this > 7) then {_this select 7} else {100};" \n
+                         "_Flicker = if (count _this > 8) then {_this select 8} else {0};" \n
+                         "_RandomFlicker = if (count _this > 9) then {_this select 9} else {20};" \n
+                         "_oldhouses = [];" \n
+                         "_Pos = [.1,.1,.1];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "isServer">*/
+                                class isServer
+                                {
+                                        itemno = 2;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"isDedicated;"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "__isServer">*/
+                                class __isServer
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="_";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"(!isServer && isMultiplayer) or (isServer && !isDedicated)"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 3;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "_">*/
+                class _
+                {
+                        name = "_";
+                        itemno = 4;
+                        init = /*%FSM<STATEINIT""">*/"_Time3 = _Time;" \n
+                         "_Lat = -1 * getNumber(configFile >> ""CfgWorlds"" >> worldName >> ""latitude"");" \n
+                         "_Day = 360 * (dateToNumber date);" \n
+                         "_Hour = (daytime / 24) * 360;" \n
+                         "_SunAngle = ((12 * cos(_day) - 78) * cos(_lat) * cos(_hour)) - (24 * sin(_lat) * cos(_day));" \n
+                         "if ((_SunAngle >= _mAngle) && (_SunAngle <= _xAngle)) then" \n
+                         "{" \n
+                         "	if (typename _Center == typename """") then" \n
+                         "	{" \n
+                         "		_Pos = getMarkerpos _Center;" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		_Pos = getPos _Center;" \n
+                         "	};" \n
+                         "	_houses = nearestObjects [_Pos, [""House""], _Radius];" \n
+                         "	for [{_i = 0},{_i < count _houses},{_i = _i + 1}] do" \n
+                         "	{" \n
+                         "		_Ramdon2 = random (100 / _Random);" \n
+                         "		if ((_Ramdon2 <= 1) && (((_houses select _i) buildingPos 2) select 0 != 0) && !(_houses select _i in _oldhouses)) then" \n
+                         "		{" \n
+                         "			_lightbulb = ""#lightpoint"" createVehicleLocal [(((_houses select _i) buildingPos (round(random 5))) select 0),(((_houses select _i) buildingPos (round(random 5))) select 1),(((_houses select _i) buildingPos (round(random 5))) select 2) + (random 1) - (random .9)];" \n
+                         "			_lightbulb setLightBrightness _Brightness;" \n
+                         "			_lightbulb setLightColor _Color;" \n
+                         "			if (_Flicker > 0) then" \n
+                         "			{" \n
+                         "				[_Center,_lightbulb,_Flicker,_Brightness,_Radius,_RandomFlicker] execFSM ""AZC_Library\AZC_LIB\visual\fsm\ChangeLight.fsm"";" \n
+                         "			}" \n
+                         "			else" \n
+                         "			{" \n
+                         "				[_Center,_lightbulb] execFSM ""AZC_Library\AZC_LIB\visual\fsm\ChangeLight.fsm"";" \n
+                         "			};" \n
+                         "		};" \n
+                         "		if (_Ramdon2 <= 1) then" \n
+                         "		{" \n
+                         "			for [{_i2 = 0},{_i2 < round (random 2)},{_i2 = _i2 + 1}] do" \n
+                         "			{" \n
+                         "				(_houses select _i) animate [format [""Lights_%1"",_i2],1];" \n
+                         "			};" \n
+                         "		};" \n
+                         "	};" \n
+                         "	_oldhouses = _houses;" \n
+                         "}" \n
+                         "else" \n
+                         "{" \n
+                         "	_Time3 = 30;" \n
+                         "};" \n
+                         "_time2 = time + _Time3;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "dead_or_deleted">*/
+                                class dead_or_deleted
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"if (typename _Center == typename """") then " \n
+                                         "{" \n
+                                         "	(getMarkerpos _Center) select 0 == 0;" \n
+                                         "}" \n
+                                         "else" \n
+                                         "{" \n
+                                         "	!(alive _Center);" \n
+                                         "};"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 5;
+                                        priority = 0.000000;
+                                        to="_";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _time2;"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

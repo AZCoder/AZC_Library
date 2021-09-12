@@ -116,7 +116,7 @@ if (count(_houses) > 0) then
 	// only spawn if not in front of player's face
 	_eyeDir = [player,_civ] call AZC_fnc_GetRelativeEyeDirection;
 	_hasLos = [player,_civ] call AZC_fnc_HasLOS;
-	if ((player distance _civ < 300) && (_hasLos && (_eyeDir < 55))) exitWith
+	if ((player distance _civ < 100) && (_hasLos && (_eyeDir < 55))) exitWith
 	{
 		[_civ] spawn AZC_fnc_Delete;
 		_civ = objNull;

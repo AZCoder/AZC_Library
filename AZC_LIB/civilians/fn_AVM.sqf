@@ -30,6 +30,7 @@ Parameters:
 	    ARRAY (optional)
 	    default: []
 	    units to blacklist (never spawn these classes, ignored if whitelist is set)
+		NOTE: blacklist should NEVER be used and will be refactored soon --- only a strictly defined whitelist should be used because you can spawn vehicles like "truck" and "paper" which are not good things to do to your mission
 	5 : _chanceCrew
 	    INT (optional)
 	    default: 50

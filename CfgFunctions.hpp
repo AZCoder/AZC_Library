@@ -21,7 +21,7 @@ class CfgFunctions
 			class SetReactHandlers {};
 			class Surrender {};
 		};
-		
+
 		class civilians
 		{
 			file = "AZC_Library\AZC_LIB\civilians";
@@ -34,7 +34,6 @@ class CfgFunctions
 			class GenerateCivilianList {};
 			class GetZones {};
 			class SetDestination {};
-			class ChimneySmoke {};
 			class CivRun {};
 			class FindVehicleDestination {};
 			class Panic {};
@@ -141,7 +140,10 @@ class CfgFunctions
 		class visual
 		{
 			file = "AZC_Library\AZC_LIB\visual";
+			class ChimneyInit;
+			class ChimneySmoke;
 			class FogBreath {};
+			class HouseLightsInit {};
 			class IFF {};
 			class IntroTitle {};
 			class Light {};

@@ -4,7 +4,7 @@ class CfgPatches
 	{
 		units[] = {};
 		weapons[] = {};
-		requiredVersion = 2.00;
+		requiredVersion = 2.04;
 		requiredAddons[] = {"A3_Sounds_F"};
 	};
 };

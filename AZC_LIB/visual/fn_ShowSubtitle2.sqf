@@ -1,6 +1,6 @@
 /*
 	Author: Thomas Ryan
-	Modified by AZCoder to make the text a bit larger.
+	Modified by AZCoder to modify the colors and add a dynamically sized background behind the text.
 	
 	Description:
 	Displays a subtitle at the bottom of the screen.
@@ -25,7 +25,8 @@ if (_text == "") exitWith {"No text defined!" call BIS_fnc_error; scriptNull};
 // Terminate previous script
 if (!(isNil {AZC_fnc_showSubtitle_subtitle2})) then {terminate AZC_fnc_showSubtitle_subtitle2};
 
-AZC_fnc_showSubtitle_subtitle2 = [_from,_text,_duration] spawn {
+AZC_fnc_showSubtitle_subtitle2 = [_from,_text,_duration] spawn
+{
 	disableSerialization;
 	scriptName format ["BIS_fnc_showSubtitle: subtitle display - %1", _this];
 	
@@ -39,21 +40,24 @@ AZC_fnc_showSubtitle_subtitle2 = [_from,_text,_duration] spawn {
 	uiNamespace setVariable ["BIS_dynamicText", displayNull];
 	
 	// Position control
-	private _w = 0.4 * safeZoneW;
-	private _x = safeZoneX + (0.5 * safeZoneW - (_w / 2));
-	private _y = safeZoneY + (0.73 * safeZoneH);
-	private _h = safeZoneH;
+	private _width = 0.4 * safeZoneW;
+	private _xpos = safeZoneX + (0.5 * safeZoneW - (_width / 2));
+	private _ypos = safeZoneY + (0.73 * safeZoneH);
+	private _height = 0.035 * safeZoneH;
 	
-	_ctrl ctrlSetPosition [_x, _y, _w, _h];
+	private _textSize = count _text + count _from;
+	_height = _height * (floor(_textSize / 80) + 1);
+	_ctrl ctrlSetPosition [_xpos,_ypos,_width,_height];
 	
 	// Hide control
 	_ctrl ctrlSetFade 1;
 	_ctrl ctrlCommit 0;
 	
 	// Show subtitle
-	_ctrl ctrlSetStructuredText parseText ("<t align = 'center' shadow = '2' size = '0.8'><t color = '#00ccff'>" + _from + ":</t> <t color = '#d0d0d0'>" + _text + "</t></t>");
+	_ctrl ctrlSetStructuredText parseText ("<t align = 'left' shadow = '2' size = '0.7'><t color = '#030303'>" + _from + ":</t> <t color = '#FFFFFF'>" + _text + "</t></t>");
+	_ctrl ctrlSetBackgroundColor [0.21,0.66,0.35,0.75];
 	_ctrl ctrlSetFade 0;
-	_ctrl ctrlCommit 0.5;
+	_ctrl ctrlCommit 0.75;
 	sleep _duration;
 	
 	// Hide subtitle

@@ -21,7 +21,7 @@ Parameters:
 	    TERMINATE marker
 	3 : _updateTime
 	    INT (optional)
-	    default: 2
+	    default: 3
 	    how often to UPDATE the marker on the map in seconds
 
 Returns: the marker
@@ -32,11 +32,8 @@ Examples:
 	// terminate marker
 	[AZC_Squad,"",true] call AZC_fnc_AutoMarker;
 ---------------------------------------------------------------------------- */
-params ["_target","_text","_terminate","_updateTime"];
+params ["_target",["_text",""],["_terminate",false],["_updateTime",3]];
 private["_marker","_markerList","_markerIndex","_markerIndexName"];
-
-if (isNil "_terminate") then { _terminate = false; };
-if (isNil "_updateTime") then { _updateTime = 2 };
 
 // track if the target already has a marker, if so then don't recreate it
 _marker = _target getVariable "AZC_MARKER";
@@ -64,7 +61,7 @@ if (isNil "_marker") then
 	if (side _target == east) then { _markerIndexName setMarkerType "o_inf" };
 	if (side _target == west) then { _markerIndexName setMarkerType "b_inf" };
 	if (side _target == resistance) then { _markerIndexName setMarkerType "n_inf" };
-	if (!isNil "_text") then { _markerIndexName setMarkerText _text; };
+	_markerIndexName setMarkerText _text;
 	_target setVariable["AZC_MARKER",_marker];
 
 	[_markerIndexName,_target,_updateTime] spawn

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
 Function: AZC_fnc_Delete
 Author: AZCoder
-Version: 2.0
+Version: 2.1
 Created: 10/25/2015
 Dependencies: AZC_fnc_Delete (this function must be able to call itself with this name)
 Description:
@@ -33,15 +33,13 @@ Examples:
 	// delete someVehicle when it's within 50m of mrkEndPoint AND player is 200+ meters from it
 	[[someVehicle],200,0,["mrkEndPoint",50]] spawn AZC_fnc_Delete;
 ---------------------------------------------------------------------------- */
-private ["_objArray","_object","_distance","_wait","_destination"];
-
 _objArray 		= [_this, 0] call bis_fnc_param;
 _distance		= [_this, 1, 0] call bis_fnc_param;
 _wait			= [_this, 2, 0] call bis_fnc_param;
 _destination	= [_this, 3, []] call bis_fnc_param;
 
 // need to determine if array of objects/groups was passed, or just a single item
-_object = _objArray;
+private _object = _objArray;
 if (typeName _objArray == "ARRAY") then
 {
 	if (count _objArray == 1) then
@@ -58,8 +56,7 @@ switch (typeName _object) do
 				[_object,_distance,_wait,_destination] spawn
 				{
 					params ["_object","_distance","_wait","_destination"];
-					_wait = time + _wait;
-					
+
 					if (count _destination == 2) then
 					{
 						_targLoc = _destination select 0;
@@ -67,7 +64,8 @@ switch (typeName _object) do
 						waitUntil { _object distance (getMarkerPos _targLoc) < _targDist };
 					};
 					
-					waitUntil { ((player distance getMarkerPos _object) > _distance) && (time > _wait) };
+					waitUntil { (player distance getMarkerPos _object) > _distance };
+					sleep _wait;
 					deleteMarker (_this select 0);
 				};
 			};
@@ -76,8 +74,7 @@ switch (typeName _object) do
 				[_object,_distance,_wait,_destination] spawn
 				{
 					params ["_object","_distance","_wait","_destination"];
-					_wait = time + _wait;
-					
+
 					if (count _destination == 2) then
 					{
 						_targLoc = _destination select 0;
@@ -85,7 +82,8 @@ switch (typeName _object) do
 						waitUntil { _object distance (getMarkerPos _targLoc) < _targDist };
 					};
 					
-					waitUntil { (player distance (getPos _object) > _distance) && (time > _wait) };
+					waitUntil { (player distance getPos _object) > _distance };
+					sleep _wait;
 					{ _object deleteVehicleCrew _x; } forEach crew _object;
 					deleteVehicle _object;
 				};
@@ -95,7 +93,6 @@ switch (typeName _object) do
 				[_object,_distance,_wait,_destination] spawn
 				{
 					params ["_object","_distance","_wait","_destination"];
-					_wait = time + _wait;
 
 					private _leader = leader _object;
 					if (count _destination == 2) then
@@ -105,7 +102,8 @@ switch (typeName _object) do
 						waitUntil { _leader distance (getMarkerPos _targLoc) < _targDist };
 					};
 					
-					waitUntil { (player distance (getPos _leader) > (_this select 1)) && (time > _wait) };
+					waitUntil { (player distance getPos _leader) > (_this select 1) };
+					sleep _wait;
 					
 					{
 						deleteVehicle (vehicle _x);

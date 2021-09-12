@@ -20,7 +20,7 @@ Examples:
 	_array = call AZC_fnc_GetWorldStats;
 ---------------------------------------------------------------------------- */
 private ["_lat","_day","_degs","_calc1","_calc2","_calc3","_hourSunrise","_minSunrise","_hourSunset","_minSunset","_angle","_worldStats","_fTime","_sunrise","_sunset"];
-_lat = abs(getNumber(configFile >> "CfgWorlds" >> worldName >> "latitude"));
+_lat = -(getNumber(configFile >> "CfgWorlds" >> worldName >> "latitude"));
 _day = 365.25 * (dateToNumber date);
 _degs = (daytime / 24) * 360;
 _calc1 = ((12 * cos(_day)) - 78) * cos(_lat);

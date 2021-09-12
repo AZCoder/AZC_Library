@@ -1,0 +1,172 @@
+/*%FSM<COMPILE "D:\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, ChimneySmoke">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-50.000000,55.000000,40.000000,105.000000,0.000000,"Start"};
+item1[] = {"__isServer",4,218,-50.000000,-15.000000,40.000000,35.000000,0.000000,"!isServer"};
+item2[] = {"Dedicated_Server",4,218,65.000000,55.000000,155.000000,105.000000,0.000000,"Dedicated" \n "Server"};
+item3[] = {"End",1,250,65.000000,-20.000000,155.000000,30.000000,0.000000,"End"};
+item4[] = {"_",2,250,-50.000000,-95.000000,40.000000,-45.000000,0.000000,""};
+item5[] = {"wait",4,218,-50.000000,-165.000000,40.000000,-115.000000,0.000000,"wait"};
+item6[] = {"KIA",4,218,65.000000,-95.000000,155.000000,-45.000000,0.000000,"KIA"};
+link0[] = {0,1};
+link1[] = {0,2};
+link2[] = {1,4};
+link3[] = {2,3};
+link4[] = {4,5};
+link5[] = {4,6};
+link6[] = {5,4};
+link7[] = {6,3};
+globals[] = {0.000000,0,0,0,0,640,480,1,14,6316128,1,-198.342651,304.972534,204.972473,-281.768097,911,894,1};
+window[] = {2,-1,-1,-1,-1,1201,2664,3924,464,3,929};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "ChimneySmoke";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"params [[""_center"",player],[""_range"",300],[""_chance"",0.5]];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Dedicated_Server">*/
+                                class Dedicated_Server
+                                {
+                                        itemno = 2;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"isDedicated || isNil ""AZC_fnc_ChimneySmoke"";"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "__isServer">*/
+                                class __isServer
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="_";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"(!isServer && isMultiplayer) or (isServer && !isDedicated)"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 3;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "_">*/
+                class _
+                {
+                        name = "_";
+                        itemno = 4;
+                        init = /*%FSM<STATEINIT""">*/"_wait = time + 15;" \n
+                         "_arma3Buildings = [" \n
+                         "	[""shop_city_05_f"",[10.5,11.2,6.5]]," \n
+                         "	[""shop_city_06_f"",[-1,10,5]]," \n
+                         "	[""addon_04_f"",[-1.8,-1.5,5]]," \n
+                         "	[""shop_town_03_f"",[0.8,1.8,5.7]]," \n
+                         "	[""shop_town_05_f"",[0.8,6,5]]," \n
+                         "	[""house_big_02_f"",[-5.2,1.4,4.1]]," \n
+                         "	[""house_big_03_f"",[-5.5,1.7,4.6]]," \n
+                         "	[""house_big_05_f"",[0.5,1,3.2]]," \n
+                         "	[""i_house_small_03_v1_f"",[1.8,1.8,4.2]]," \n
+                         "	[""i_shop_01_v1_f"",[1.6,3.5,6.5]]," \n
+                         "	[""i_shop_01_v2_f"",[1.6,3.5,6.5]]," \n
+                         "	[""i_shop_01_v3_f"",[1.6,3.5,6.5]]," \n
+                         "	[""i_shop_02_v1_f"",[2.6,-4,6]]," \n
+                         "	[""i_shop_02_v2_f"",[2.6,-4,6]]," \n
+                         "	[""i_shop_02_v3_f"",[2.6,-4,6]]," \n
+                         "	[""i_stone_housesmall_v3_f"",[1.5,5,3.3]]" \n
+                         "];" \n
+                         "" \n
+                         "_modelList = _arma3Buildings apply { _x select 0 };" \n
+                         "_posList = _arma3Buildings apply { _x select 1 };" \n
+                         "" \n
+                         "_houselist = nearestTerrainObjects [_center,[""House""],_range];" \n
+                         "_housesChecked = missionNamespace getVariable ""AZC_SmokeHouseList"";" \n
+                         "if (isNil ""_housesChecked"") then" \n
+                         "{" \n
+                         "	_housesChecked = [];" \n
+                         "	missionNamespace setVariable [""AZC_SmokeHouseList"",_housesChecked];" \n
+                         "};" \n
+                         "" \n
+                         "// remove checked houses from list" \n
+                         "_houselist = _houselist - _housesChecked;" \n
+                         "" \n
+                         "{" \n
+                         "	_obj = _x;" \n
+                         "	// extract model name and check if it is in the Altis/Tanoa list" \n
+                         "	_model = ((getModelInfo _obj select 0) splitString ""."") select 0;" \n
+                         "	_pos = [];" \n
+                         "	for ""_i"" from 0 to 10 do" \n
+                         "	{" \n
+                         "		_pos = _obj selectionPosition format [""AIChimney_small_%1"",_i];" \n
+                         "		if (_pos distance [0,0,0] == 0) exitwith {};" \n
+                         "		[_chance,_pos,_obj] call AZC_fnc_ChimneySmoke;" \n
+                         "	};" \n
+                         "	" \n
+                         "	// check if Arma 3 building, if true get custom chimney position" \n
+                         "	_index = _modelList find _model;" \n
+                         "	if (_index > -1) then" \n
+                         "	{" \n
+                         "		_pos = _posList select _index;" \n
+                         "		// chimney smoke" \n
+                         "		[_chance,_pos,_obj] call AZC_fnc_ChimneySmoke;" \n
+                         "	};" \n
+                         "	" \n
+                         "	// save building as being checked" \n
+                         "	_housesChecked pushBack _obj;" \n
+                         "} forEach _houselist;" \n
+                         "missionNamespace setVariable [""AZC_SmokeHouseList"",_housesChecked];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "KIA">*/
+                                class KIA
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!(alive player);"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 5;
+                                        priority = 0.000000;
+                                        to="_";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _wait;"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

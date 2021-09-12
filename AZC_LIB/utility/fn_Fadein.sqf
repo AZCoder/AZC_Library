@@ -5,7 +5,7 @@ Version: 1.0
 Created: 01/15/2021
 Dependencies: none
 Description:
-	Convenience function to fade in screen, sound, and enable environmental sounds and radio.
+	Convenience function to fade in screen, sound, and environmental sounds. Enables sentences and radio.
 
 Parameters:
 	0: _fadeDelay
@@ -31,9 +31,13 @@ params[["_fadeDelay",5],["_soundDelay",5],["_maxVolume",1]];
 if (_fadeDelay < 0 || _fadeDelay > 20) then { _fadeDelay = 20; };
 if (_soundDelay < 0 || _soundDelay > 20) then { _fadeDelay = 20; };
 if (_maxVolume < 0 || _maxVolume > 1) then { _maxVolume = 1; };
+
+0 fadeEnvironment 0;
+enableEnvironment true;
+
 cutText ["","BLACK IN",_fadeDelay];
 _soundDelay fadeSound _maxVolume;
 _soundDelay fadeSpeech _maxVolume;
+_soundDelay fadeEnvironment _maxVolume;
 enableRadio true;
 enableSentences true;
-enableEnvironment true;

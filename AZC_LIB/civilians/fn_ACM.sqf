@@ -176,7 +176,7 @@ missionNamespace setVariable ["AZC_UsedCivHouses", _usedHouses];
 _nearestLocation = [_zones,_minDistance] call AZC_fnc_GetNearestLocation;
 if (_chimneys) then
 {
-	[(_nearestLocation select 0),(_nearestLocation select 1)] spawn AZC_fnc_ChimneySmoke;
+	[player,300,0.75] spawn AZC_fnc_ChimneyInit;
 };
 _center = _nearestLocation select 0;
 _range = _nearestLocation select 1;
@@ -202,10 +202,6 @@ while { _civilianManagerActive } do
 	
 	if (!((_lastLocation select 0) isEqualTo (_nearestLocation select 0))) then
 	{
-		if (_chimneys) then
-		{
-			[(_nearestLocation select 0),(_nearestLocation select 1)] spawn AZC_fnc_ChimneySmoke;
-		};
 		// AZC_fnc_GetBuildings is a costly function call, only call it when location changes
 		_center = _nearestLocation select 0;
 		_range = _nearestLocation select 1;
