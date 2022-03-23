@@ -41,3 +41,8 @@ _soundDelay fadeSpeech _maxVolume;
 _soundDelay fadeEnvironment _maxVolume;
 enableRadio true;
 enableSentences true;
+
+// RUG DSAI disables sentences for some reason (why?)
+// and will override this function if called too early at mission start
+sleep _soundDelay;
+if (!sentencesEnabled) then { enableSentences true; };

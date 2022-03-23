@@ -15,7 +15,7 @@ Parameters:
 Returns: nothing
 
 Examples:
-	[Jim] call AZC_fnc_ClearWaypoints;
+	[Jim] spawn AZC_fnc_ClearWaypoints;
 ---------------------------------------------------------------------------- */
 params ["_unit"];
 if (!(alive _unit)) exitWith {};

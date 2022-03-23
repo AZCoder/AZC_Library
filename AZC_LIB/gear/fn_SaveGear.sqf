@@ -34,6 +34,10 @@ _weaps = weapons _unit;
 _pack = backpack _unit;
 _weapItems = primaryWeaponItems _unit;
 _handItems = handgunItems _unit;
-_mags pushBack (secondaryWeaponMagazine _unit);
+
+{
+	_mags pushBack _x;
+} forEach (secondaryWeaponMagazine _unit);
+
 AZC_GEAR_ARRAY = [_mags,_weaps,_pack,_weapItems,_handItems];
 saveVar "AZC_GEAR_ARRAY";

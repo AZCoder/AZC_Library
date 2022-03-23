@@ -63,25 +63,15 @@ Extended Example (for conversations):
 	AZC_DAD kbAddTopic [_conversation, "dialog\intro.bikb"];
 	player kbAddTopic [_conversation, "dialog\intro.bikb"];
 
-	_hnd1 = [AZC_DAD, player, "Dad", "INTRO_DAD1", "STR_GA1SF02_INTRO_DAD1", _conversation] spawn AZC_fnc_Speak;
+	_hnd1 = [AZC_DAD,player,"Dad","INTRO_DAD1","STR_GA1SF02_INTRO_DAD1",_conversation] spawn AZC_fnc_Speak;
 	waitUntil { scriptDone _hnd1 };
 
-	_hnd2 = [player, AZC_DAD, "Peter", "INTRO_PYTOR1", "STR_GA1SF02_INTRO_PT1", _conversation] spawn AZC_fnc_Speak;
-	waitUntil { scriptDone _hnd2 };
-
-	_hnd1 = [AZC_DAD, player, "Dad", "INTRO_DAD2", "STR_GA1SF02_INTRO_DAD2", _conversation] spawn AZC_fnc_Speak;
+	OR the kbAddTopic can be done automatically if added as a parameter
+	
+	_hnd1 = [AZC_DAD,player,"Dad","INTRO_DAD1","STR_GA1SF02_INTRO_DAD1","truck","dialog\intro.bikb"] spawn AZC_fnc_Speak;
 	waitUntil { scriptDone _hnd1 };
 ---------------------------------------------------------------------------- */
-private ["_speaker","_listener","_name","_textXml","_textClass","_conversation","_sentenceClass"];
-
-_speaker		= [_this, 0] call bis_fnc_param;
-_listener 		= [_this, 1] call bis_fnc_param;
-_name		 	= [_this, 2] call bis_fnc_param;
-_sentenceClass	= [_this, 3, ""] call bis_fnc_param;
-_textXML		= [_this, 4] call bis_fnc_param;
-_conversation	= [_this, 5] call bis_fnc_param;
-_convPathName	= [_this, 6, ""] call bis_fnc_param;
-_forceRadio		= [_this, 7, false, [false]] call bis_fnc_param;
+params ["_speaker","_listener","_name",["_sentenceClass",""],["_textXML",""],"_conversation",["_convPathName",""],["_forceRadio",false]];
 
 if (!(alive _speaker) || !(alive _listener)) exitWith {};
 if (accTime != 1) then { setAccTime 1; };
@@ -99,14 +89,17 @@ if (_convPathName != "") then
 	};
 };
 
-if !("ItemRadio" in (assignedItems _speaker)) then
+private _radioFound = false;
+
+{
+	private _item = _x;
+	// RHS has unique radio names so I made this a generic search
+	if (_item find "radio" > -1) exitWith { _radioFound = true; };
+} forEach assignedItems _speaker;
+
+if (!_radioFound) then
 {
 	_speaker linkItem "ItemRadio";
-};
-
-if !("ItemRadio" in (assignedItems _listener)) then
-{
-	_listener linkItem "ItemRadio";
 };
 
 if (count _textXML > 0) then
@@ -121,6 +114,6 @@ if (_sentenceClass != "") then
 }
 else
 {
-	// this is for mission development, allows tester to briefly see dialog
-	sleep 2;
+	// this is for mission development, allows tester to briefly see dialog when no sound is recorded yet
+	sleep 4;
 };

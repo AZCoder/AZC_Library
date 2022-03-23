@@ -83,6 +83,7 @@ if (isNil "_marker") then
 		_target setVariable["AZC_MARKER",nil]; // in case we need to create this marker again
 	};
 };
+
 AZC_LAST_TARG = _target;
 // return marker object in case caller wants it
 _marker

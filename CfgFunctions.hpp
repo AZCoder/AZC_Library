@@ -21,31 +21,6 @@ class CfgFunctions
 			class SetReactHandlers {};
 			class Surrender {};
 		};
-
-		class civilians
-		{
-			file = "AZC_Library\AZC_LIB\civilians";
-			class GetBuildings {};
-			class AmbientCivilianAddAction {};
-			class CivCleanup  {};
-			class GetClosestHuman {};
-			class GetNearestRoadSegment {};
-			class GetNearestLocation {};
-			class GenerateCivilianList {};
-			class GetZones {};
-			class SetDestination {};
-			class CivRun {};
-			class FindVehicleDestination {};
-			class Panic {};
-			class CreateCivilian {};
-			class CreateVehicle {};
-			class SetVehicleDestination {};
-			class SetEmptyVehiclePosition {};
-			class SetVehicleOnRoad {};
-			class ACM {};
-			class AVM {};
-			class AVM_Main {};
-		};
 		
 		class damage
 		{
@@ -80,6 +55,7 @@ class CfgFunctions
 		{
 			file = "AZC_Library\AZC_LIB\patrol";
 			class APM {};
+			class GetBuildings {};
 			class GetNearestOpenBuilding {};
 			class SetInteriorDestination {};
 		};

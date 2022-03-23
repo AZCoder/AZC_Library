@@ -9,7 +9,7 @@ Description:
 	useful for spawning and detecting weather effects
 ---------------------------------------------------------------------------- */
 
-_object = _this;
+params ["_object"];
 _inside = false;
 _worldPos = getPosWorld _object;
 _skyPos = getPosWorld _object vectorAdd [0, 0, 50];

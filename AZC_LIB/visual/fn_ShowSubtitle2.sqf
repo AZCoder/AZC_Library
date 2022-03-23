@@ -40,7 +40,8 @@ AZC_fnc_showSubtitle_subtitle2 = [_from,_text,_duration] spawn
 	uiNamespace setVariable ["BIS_dynamicText", displayNull];
 	
 	// Position control
-	private _width = 0.4 * safeZoneW;
+	private _multiplier = 0.25 + (count _text / 500) + (count _from / 500);
+	private _width = _multiplier * safeZoneW;
 	private _xpos = safeZoneX + (0.5 * safeZoneW - (_width / 2));
 	private _ypos = safeZoneY + (0.73 * safeZoneH);
 	private _height = 0.035 * safeZoneH;

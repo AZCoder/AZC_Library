@@ -26,6 +26,10 @@ Parameters:
 	    NUMERIC (optional)
 	    default: 220
 	    value in m/sec, recommend to leave alone unless impact is glitchy
+	5 : _launchSeparation
+	    NUMERIC (optional)
+	    default: 5
+	    z-axis separation of missile launch from source, sometimes missile will explode with default value
 
 Returns: nothing.
 
@@ -41,9 +45,11 @@ Missile_AA_03_F
 Missile_AA_04_F
 Missile_AGM_01_F
 Missile_AGM_02_F
+ammo_Missile_Cruise_01 - regular cruise missile
+ammo_Missile_Cruise_01_Cluster - cruise missile with cluster droplets, very impressive to watch
 
 Examples:
-	[samDude,enemyHelo,"Missile_AA_04_F",false,200] spawn AZC_fnc_SpawnMissile;
+	[samDude,enemyHelo,"Missile_AA_04_F",false,200,12] spawn AZC_fnc_SpawnMissile;
 
 ---------------------------------------------------------------------------- */
 private ["_destroyTarget","_launcher","_velocityX", "_velocityY", "_velocityZ", "_target","_missileSpeed","_primaryTarget","_missileStart","_missileType"];
@@ -53,22 +59,12 @@ _primaryTarget		= [_this, 1] call bis_fnc_param;
 _missileType		= [_this, 2] call bis_fnc_param;
 _destroyTarget		= [_this, 3, true, [true]] call bis_fnc_param;
 _missileSpeed		= [_this, 4, 220, [0]] call bis_fnc_param;
+_launchSeparation	= [_this, 5, 5] call bis_fnc_param;
 
 _missileStart = [_launcher,1] call AZC_fnc_getPos;
-_launchType = typeName _launcher;
-if ((_launchType == "STRING") || (_launchType== "OBJECT")) then
-{
-	_xm = _missileStart select 0;
-	_ym = (_missileStart select 1) - 5;
-	if (_launchType != "STRING") then
-	{
-		_missileStart =  [_xm,_ym,((_missileStart select 2)+5)];
-	}
-	else
-	{
-		_missileStart = [_xm,_ym,30]; // this won't work over land unless at sea level !!
-	};
-};
+_xm = _missileStart select 0;
+_ym = (_missileStart select 1) - 5;
+_missileStart = [_xm,_ym,_launchSeparation]; // this won't work over land unless at sea level !!
 
 // accelerated time causes the missile to miss endlessly
 [_primaryTarget] spawn
@@ -93,9 +89,18 @@ _getPrimaryTarget =
 _target = call _getPrimaryTarget;
 
 _missile = _missileType createVehicle _missileStart;
-_missile setPosASL [(_missileStart select 0),(_missileStart select 1),(_missileStart select 2)];
+if (surfaceIsWater (getPos _missile)) then
+{
+	_missile setPosASL [(_missileStart select 0),(_missileStart select 1),(_missileStart select 2)];
+}
+else
+{
+	_missile setPosATL [(_missileStart select 0),(_missileStart select 1),(_missileStart select 2)];
+};
+
 _minDistance = _missileSpeed * 0.5;
-AZC_MISSILE_X = _missile; // exposing missile to outside world
+// expose missile externally so that caller can react to missile being created and/or destroyed
+AZC_MISSILE_X = _missile;
 
 //procedure for guiding the missile
 _homeMissile = 
@@ -121,7 +126,7 @@ _homeMissile =
 	else
 	{
 		_missile setDamage 1;
-		deleteVehicle _missile;
+		// deleteVehicle _missile;
 	};
 
 	[_velocityX, _velocityY, _velocityZ]
